@@ -86,11 +86,20 @@ fun GameScreen(
                 )
             }
         }
+        else if (QuestionsData.roundQuestion.value >= 10){
+            Column {
+                RankingText()
+                Spacer(modifier = Modifier.padding(10.dp))
+                NameScoreTxt()
+                Spacer(modifier = Modifier.padding(10.dp))
+                SaveButton(rankingViewModel, navController)
+            }
+        }
     }
 }
 
 @Composable
-fun SaveButton(rankingViewModel: RankingViewModel) {
+fun SaveButton(rankingViewModel: RankingViewModel, navController: NavController) {
     Button(onClick = {
         if (RankingData.nameTxt.value != "") {
             rankingViewModel.addRanking(
@@ -108,8 +117,11 @@ fun SaveButton(rankingViewModel: RankingViewModel) {
                 )
             )
         }
+        navController.navigate("start")
     }) {
-
+        Text(
+            text = "Save"
+        )
     }
 }
 
