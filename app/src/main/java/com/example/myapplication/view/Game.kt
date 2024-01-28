@@ -1,6 +1,7 @@
 package com.example.myapplication.view
 
 import android.util.Log
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -22,7 +24,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
@@ -70,11 +75,22 @@ fun GameScreen(
                 )
         )
         if (QuestionsData.questionsToShow.isNotEmpty() && QuestionsData.roundQuestion.value < QuestionsData.questionsToShow.size){
-            RoundScoreText(Modifier.align(Alignment.TopCenter))
+            Box(modifier = Modifier
+                .align(Alignment.TopCenter)
+                .fillMaxHeight(0.5f)
+                .fillMaxWidth()
+            ){
+                RoundScoreText(Modifier.align(Alignment.TopCenter))
+               /*
+                CircularProgress(Modifier.align(Alignment.BottomCenter))
+                Counter(Modifier.align(Alignment.BottomCenter))
+                */
+            }
             Box(modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .fillMaxHeight(0.5f)
-                .fillMaxWidth()){
+                .fillMaxWidth()
+            ){
                 QuestionText(
                     Modifier.align(Alignment.TopCenter),
                     QuestionsData.questionsToShow[QuestionsData.roundQuestion.value].question
@@ -95,6 +111,48 @@ fun GameScreen(
                 SaveButton(rankingViewModel, navController)
             }
         }
+    }
+}
+
+@Composable
+fun CircularProgress(modifier: Modifier) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 15.dp),
+    ) {
+        Canvas(
+            modifier = Modifier
+                .size(50.dp)
+                .align(Alignment.CenterHorizontally),
+        ){
+            val radius = minOf( size.width, size.height) / 2f
+            val strokeWidth = 4.dp.toPx()
+            val sweepAngle = (360 * QuestionsData.counterTime.value).toFloat()
+            drawArc(
+                color = Color(0xFFFF5722),
+                startAngle = 270f,
+                sweepAngle = sweepAngle,
+                useCenter = true,
+                size = Size(radius * 2, radius * 2),
+                style = Stroke(strokeWidth)
+            )
+        }
+    }
+}
+
+@Composable
+fun Counter(modifier: Modifier) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 28.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "${QuestionsData.counterTime.value}",
+            fontWeight = FontWeight.Bold,
+        )
     }
 }
 

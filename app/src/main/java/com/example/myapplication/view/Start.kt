@@ -55,10 +55,17 @@ fun StartScreen(
     }
 }
 
+/**
+ * Screen of the start of the app
+ * @param modifier Modifier
+ * @param navController NavController
+ */
 @Composable
 fun Start(modifier: Modifier, navController: NavController) {
+    // Reset values to start a new game
     QuestionsData.roundQuestion.value = 0
     RankingData.score.value = 0
+    QuestionsData.counterActive.value = false
     Column (modifier = modifier){
         StartButton(navController)
         Spacer(modifier = Modifier.padding(2.dp))
@@ -69,6 +76,11 @@ fun Start(modifier: Modifier, navController: NavController) {
     }
 }
 
+/**
+ * Button to change to the add questions screen
+ * @param navController NavController
+ * @param modifier Modifier
+ */
 @Composable
 fun AddQuestions(navController: NavController){
     Button(
