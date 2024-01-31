@@ -1,9 +1,12 @@
 package com.example.myapplication.viewmodel
 
 
+import android.os.CountDownTimer
 import android.util.Log
+import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.myapplication.models.Data
 import com.example.myapplication.models.Questions
 import com.example.myapplication.models.QuestionsData
 import com.example.myapplication.models.RankingData
@@ -14,6 +17,35 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class QuestionsViewModel(private val questionsDao: QuestionsDao): ViewModel() {
+
+    private var timer: CountDownTimer? = null
+
+    fun startTimer() {
+        Data.counter.value = 31
+        timer = object : CountDownTimer(Data.counter.value.toLong() * 1000, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                Data.counter.value--
+            }
+
+            override fun onFinish() {
+                // Lógica para manejar el tiempo agotado
+                viewModelScope.launch{
+                    QuestionsData.buttonState.value = "timeOut"
+                    delay(2000)
+                    QuestionsData.buttonState.value = "none"
+                    QuestionsData.roundQuestion.value += 1
+                    Data.buttonEnabled.value = true
+                    if (QuestionsData.roundQuestion.value < QuestionsData.questionsToShow.size) {
+                        startTimer()
+                    }
+                }
+            }
+        }.start()
+    }
+
+    fun resetTimer() {
+        timer?.cancel()
+    }
 
     fun getQuestions() {
         viewModelScope.launch {
@@ -29,24 +61,30 @@ class QuestionsViewModel(private val questionsDao: QuestionsDao): ViewModel() {
         }
     }
 
-    fun decreaseCounter() {
-        viewModelScope.launch {
-            if(QuestionsData.counterActive.value && QuestionsData.counterTime.value > 0){
-                delay(1000)
-                QuestionsData.counterTime.value -= 1
-            }
-        }
-    }
 
-    fun isCorrectAnswer(answer: String) {
+    // pasarle a lo mejor el boton?
+    fun isCorrectAnswer(answer: String, clicked: MutableState<Boolean>) {
+        // parar el tiempo
+        resetTimer()
         if (answer == QuestionsData.correctAnswer) {
             RankingData.score.value += 1
+            QuestionsData.buttonState.value = "correct"
         }
         else {
             RankingData.score.value -= 1
+            QuestionsData.buttonState.value = "wrong"
         }
-        QuestionsData.roundQuestion.value += 1
-        QuestionsData.counterTime.value = 30
+        viewModelScope.launch {
+            // añadir el borde a la respuesta seleccionada
+            delay(2000)
+            clicked.value = false
+            Data.buttonEnabled.value = true
+            QuestionsData.buttonState.value = "none"
+            QuestionsData.roundQuestion.value += 1
+            if (QuestionsData.roundQuestion.value < QuestionsData.questionsToShow.size) {
+                startTimer()
+            }
+        }
     }
 
     fun addQuestion(question: Questions) {

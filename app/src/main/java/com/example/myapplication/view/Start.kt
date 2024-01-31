@@ -65,7 +65,6 @@ fun Start(modifier: Modifier, navController: NavController) {
     // Reset values to start a new game
     QuestionsData.roundQuestion.value = 0
     RankingData.score.value = 0
-    QuestionsData.counterActive.value = false
     Column (modifier = modifier){
         StartButton(navController)
         Spacer(modifier = Modifier.padding(2.dp))

@@ -4,7 +4,6 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 
 object QuestionsData {
-    var counterActive = mutableStateOf(false)
     var questionsToShow = listOf<Questions>()
     var roundQuestion = mutableStateOf(0)
     var answers: List<String> = emptyList()
@@ -13,8 +12,7 @@ object QuestionsData {
     var correctAnswerTxt = mutableStateOf("")
     var wrongAnswer1Txt = mutableStateOf("")
     var wrongAnswer2Txt = mutableStateOf("")
-    var counterTime = mutableStateOf(30)
-
+    var buttonState = mutableStateOf("ninguno")
     val addQuestions = listOf(
         Questions(
             question = "¿Cuál fue la primera supertecnica que se vio?",
