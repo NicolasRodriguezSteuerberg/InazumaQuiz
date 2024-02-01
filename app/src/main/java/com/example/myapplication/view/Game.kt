@@ -33,6 +33,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.myapplication.R
@@ -251,10 +252,16 @@ fun QuestionText(modifier: Modifier,question: String) {
         Text(
             text = question,
             modifier = Modifier
-                .fillMaxWidth(0.9f)
-                .background(Color(0xA960EAFC)),
+                .fillMaxWidth(0.95f)
+                .background(Color(0xA960EAFC))
+                .border(
+                    width = 5.dp,
+                    color = Color(0xFF0069A2)
+                )
+                .padding(10.dp),
             fontWeight = FontWeight.Bold,
-            color = Color(0xFF000000)
+            color = Color(0xFF000000),
+            textAlign = TextAlign.Center
         )
     }
 }

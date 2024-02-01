@@ -1,6 +1,7 @@
 package com.example.myapplication
 
 import android.os.Bundle
+import android.view.MotionEvent
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -35,5 +36,8 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        return ev?.getPointerCount() == 1 && super.dispatchTouchEvent(ev)
     }
 }
