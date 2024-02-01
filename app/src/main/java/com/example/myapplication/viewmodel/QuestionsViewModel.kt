@@ -31,6 +31,7 @@ class QuestionsViewModel(private val questionsDao: QuestionsDao): ViewModel() {
                 // Lógica para manejar el tiempo agotado
                 viewModelScope.launch{
                     QuestionsData.buttonState.value = "timeOut"
+                    RankingData.score.value -= 20
                     delay(2000)
                     QuestionsData.buttonState.value = "none"
                     QuestionsData.roundQuestion.value += 1
@@ -67,11 +68,12 @@ class QuestionsViewModel(private val questionsDao: QuestionsDao): ViewModel() {
         // parar el tiempo
         resetTimer()
         if (answer == QuestionsData.correctAnswer) {
-            RankingData.score.value += 1
+            // añado los puntos en funcion del tiempo que queda
+            RankingData.score.value += Data.counter.value
             QuestionsData.buttonState.value = "correct"
         }
         else {
-            RankingData.score.value -= 1
+            RankingData.score.value -= 10
             QuestionsData.buttonState.value = "wrong"
         }
         viewModelScope.launch {
