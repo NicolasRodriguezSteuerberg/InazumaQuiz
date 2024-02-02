@@ -1,5 +1,6 @@
 package com.example.myapplication.view
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -7,9 +8,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -98,30 +101,56 @@ fun ranking(modifier: Modifier, rankingList: List<Ranking>) {
                 text = "No hay ranking"
             )
         }else{
-            for (ranking in rankingList) {
-                Row {
-                    Surface(
-                        modifier = Modifier
-                            .padding(1.dp)
-                            .size(30.dp),
-                        shape = CircleShape,
-                        color = when (position) {
-                            1 -> Color(0xFFFFBF00)
-                            2 -> Color(0xFFE3E4E5)
-                            3 -> Color(0xFFCD7F32)
-                            else -> Color.White
-                        }
-                    ) {
-                        Column(verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text(text = position.toString(), color = Color.Black)
-                        }
-                    }
+            for ((position, ranking) in rankingList.withIndex()) {
+                position(position, ranking)
+            }
+        }
+    }
+}
+
+@Composable
+fun position(position: Int, ranking: Ranking){
+    Surface (
+        shape = RoundedCornerShape(16.dp),
+        modifier = Modifier
+            .fillMaxWidth(0.75f)
+            .height(40.dp)
+    ){
+        Row (
+            modifier = Modifier
+                .fillMaxWidth(1f)
+                .background(Color(0xFF05A5B9)),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ){
+            Surface(
+                modifier = Modifier
+                    .padding(5.dp)
+                    .size(30.dp),
+                shape = CircleShape,
+                color = when (position + 1) {
+                    1 -> Color(0xFFFFBF00)
+                    2 -> Color(0xFFE3E4E5)
+                    3 -> Color(0xFFCD7F32)
+                    else -> Color.White
+                }
+            ) {
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     Text(
-                        text = ranking.user + ": " + ranking.score.toString()
+                        text = (position + 1).toString(), color = Color.Black
                     )
                 }
             }
+            Text(
+                text = ranking.user
+            )
+            Text(
+                modifier = Modifier.padding(5.dp),
+                text = ranking.score.toString()
+            )
         }
     }
 }
