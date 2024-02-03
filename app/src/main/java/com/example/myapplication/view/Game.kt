@@ -55,10 +55,14 @@ fun GameScreen(
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
     val aspectratio = screenWidth/screenHeight
+
     // Get questions from database
-    LaunchedEffect("getQuestions"){
-        questionsViewModel.getQuestions()
+    if(!Data.questionLoaded.value){
+        LaunchedEffect("getQuestions"){
+            questionsViewModel.getQuestions()
+        }
     }
+
 
     DisposableEffect(Unit) {
         onDispose {
@@ -222,7 +226,8 @@ fun AnswerButton(it: String, questionsViewModel: QuestionsViewModel) {
         enabled = Data.buttonEnabled.value,
         modifier = Modifier
             .fillMaxWidth(0.75f)
-            .background(Color(0xFF0069A2), shape = CutCornerShape(50))
+            .background(Color(0xFF0069A2),
+        shape = CutCornerShape(50))
             .border(
                 width = 1.5.dp,
                 color = when {

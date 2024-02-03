@@ -24,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.myapplication.R
+import com.example.myapplication.models.Data
 import com.example.myapplication.models.QuestionsData
 import com.example.myapplication.models.RankingData
 
@@ -35,6 +36,7 @@ fun StartScreen(
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
     val aspectratio = screenWidth/screenHeight
+
     Box(
         modifier = Modifier
             .fillMaxSize(),
@@ -65,6 +67,10 @@ fun Start(modifier: Modifier, navController: NavController) {
     // Reset values to start a new game
     QuestionsData.roundQuestion.value = 0
     RankingData.score.value = 0
+    // Initialize the questions
+    Data.questionLoaded.value = false
+    QuestionsData.questionsToShow = listOf()
+
     Column (modifier = modifier){
         StartButton(navController)
         Spacer(modifier = Modifier.padding(2.dp))

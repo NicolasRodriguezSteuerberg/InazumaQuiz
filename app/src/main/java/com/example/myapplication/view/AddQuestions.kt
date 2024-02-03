@@ -1,27 +1,38 @@
 package com.example.myapplication.view
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import com.example.myapplication.R
 import com.example.myapplication.models.Questions
 import com.example.myapplication.models.QuestionsData
-import com.example.myapplication.models.RankingData
 import com.example.myapplication.viewmodel.QuestionsViewModel
 
 @Composable
@@ -32,21 +43,68 @@ fun QuestionScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .background(Color(0xFF393939))
     ){
-        Question(
-            modifier = Modifier.align(Alignment.TopCenter),
-            navController = navController,
-            questionsViewModel = questionsViewModel
-        )
+        Box(
+            modifier = Modifier
+                .fillMaxHeight(0.2f)
+                .fillMaxWidth()
+                .align(Alignment.TopCenter)
+        ){
+            Logo(modifier = Modifier.align(Alignment.Center))
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxHeight(0.6f)
+                .fillMaxWidth()
+                .align(Alignment.Center)
+        ){
+            Question(modifier = Modifier.align(Alignment.TopCenter))
+        }
+        // caja para los botones
+        Box(
+            modifier = Modifier
+                .fillMaxHeight(0.2f)
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+        ){
+            ButtonsAddBack(
+                modifier = Modifier.align(Alignment.TopCenter),
+                navController = navController,
+                questionsViewModel = questionsViewModel
+            )
+        }
+    }
+}
+@Composable
+fun ButtonsAddBack(
+    questionsViewModel: QuestionsViewModel,
+    navController: NavController,
+    modifier: Modifier
+) {
+    Column(
+        modifier = modifier
+    ){
+        AddQuestionButton(questionsViewModel = questionsViewModel)
+        Spacer(modifier = Modifier.padding(8.dp))
+        BackButton(navController = navController)
     }
 }
 
 @Composable
-fun Question(modifier: Modifier, navController: NavHostController, questionsViewModel: QuestionsViewModel) {
+fun Logo(modifier: Modifier){
+    Image(
+        painter = painterResource(id = R.drawable.logo),
+        contentDescription = "Logo de Inazuma Eleven",
+        modifier = modifier
+    )
+}
+
+@Composable
+fun Question(modifier: Modifier) {
     Column(
         modifier = modifier
     ) {
-        Spacer(modifier = Modifier.padding(20.dp))
         QuestionTxt()
         Spacer(modifier = Modifier.padding(8.dp))
         CorrectAnswerTxt()
@@ -55,18 +113,22 @@ fun Question(modifier: Modifier, navController: NavHostController, questionsView
         Spacer(modifier = Modifier.padding(8.dp))
         WrongAnswer2Txt()
         Spacer(modifier = Modifier.padding(8.dp))
-        AddQuestionButton(questionsViewModel)
-        Spacer(modifier = Modifier.padding(8.dp))
-        BackButton(navController)
     }
 }
 
 @Composable
-fun BackButton(navController: NavHostController) {
+fun BackButton(navController: NavController) {
     Button(
         onClick = {
             navController.navigate("start")
         },
+        modifier = Modifier
+            .fillMaxWidth(0.75f),
+        shape = CutCornerShape(0),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color(0xFF8D8987),
+            contentColor = Color(0xFFFFCB63)
+        )
     ) {
         Text(
             text = "Back"
@@ -94,6 +156,13 @@ fun AddQuestionButton(questionsViewModel: QuestionsViewModel) {
                 )
             }
         },
+        modifier = Modifier
+            .fillMaxWidth(0.75f),
+        shape = CutCornerShape(0),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color(0xFF8D8987),
+            contentColor = Color(0xFFFFCB63)
+        )
     ) {
         Text(
             text = "Add Question"
@@ -101,6 +170,7 @@ fun AddQuestionButton(questionsViewModel: QuestionsViewModel) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WrongAnswer1Txt() {
     TextField(
@@ -108,19 +178,21 @@ fun WrongAnswer1Txt() {
         onValueChange = {
             QuestionsData.wrongAnswer1Txt.value = it
         },
-        modifier = Modifier
-            .fillMaxWidth(0.75f)
-        ,
-        textStyle = LocalTextStyle.current.copy(color = Color(0xFFF18D65)),
+        modifier = Modifier.fillMaxWidth(0.75f),
+        textStyle = LocalTextStyle.current.copy(color = Color(0xFFFFCB63)),
         placeholder = {
             Text(
                 text = "Wrong Answer 1",
-                color = Color(0xFFF18D65)
+                color = Color(0xA6FFCB63)
             )
-        }
+        },
+        colors = TextFieldDefaults.textFieldColors(
+            containerColor = Color(0xFF8D8987)
+        )
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WrongAnswer2Txt() {
     TextField(
@@ -131,16 +203,20 @@ fun WrongAnswer2Txt() {
         modifier = Modifier
             .fillMaxWidth(0.75f)
         ,
-        textStyle = LocalTextStyle.current.copy(color = Color(0xFFF18D65)),
+        textStyle = LocalTextStyle.current.copy(color = Color(0xFFFFCB63)),
         placeholder = {
             Text(
                 text = "Wrong Answer 2",
-                color = Color(0xFFF18D65)
+                color = Color(0xA6FFCB63)
             )
-        }
+        },
+        colors = TextFieldDefaults.textFieldColors(
+            containerColor = Color(0xFF8D8987)
+        )
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CorrectAnswerTxt() {
     TextField(
@@ -151,13 +227,17 @@ fun CorrectAnswerTxt() {
         modifier = Modifier
             .fillMaxWidth(0.75f)
         ,
-        textStyle = LocalTextStyle.current.copy(color = Color(0xFFF18D65)),
+        textStyle = LocalTextStyle.current.copy(color = Color(0xFFFFCB63)),
         placeholder = {
             Text(
                 text = "Correct Answer",
-                color = Color(0xFFF18D65)
+                color = Color(0xA6FFCB63)
             )
-        }
+        },
+        colors = TextFieldDefaults.textFieldColors(
+            containerColor = Color(0xFF8D8987)
+        )
+
     )
 }
 
@@ -172,12 +252,15 @@ fun QuestionTxt(){
         modifier = Modifier
             .fillMaxWidth(0.75f)
         ,
-        textStyle = LocalTextStyle.current.copy(color = Color(0xFFF18D65)),
+        textStyle = LocalTextStyle.current.copy(color = Color(0xFFFFCB63)),
         placeholder = {
             Text(
                 text = "Question",
-                color = Color(0xFFF18D65)
+                color = Color(0xA6FFCB63)
             )
-        }
+        },
+        colors = TextFieldDefaults.textFieldColors(
+            containerColor = Color(0xFF8D8987)
+        )
     )
 }

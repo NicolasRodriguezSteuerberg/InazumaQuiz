@@ -5,4 +5,5 @@ import androidx.compose.runtime.mutableStateOf
 object Data {
     var counter = mutableStateOf(31)
     var buttonEnabled = mutableStateOf(true)
+    var questionLoaded = mutableStateOf(false)
 }
