@@ -19,6 +19,23 @@ import kotlinx.coroutines.withContext
 class QuestionsViewModel(private val questionsDao: QuestionsDao): ViewModel() {
 
     private var timer: CountDownTimer? = null
+    private var progressTimer: CountDownTimer? = null
+
+    // si no los hago aquí los botones de las respuestas se cambian cada segundo
+    fun startProgressTimer(){
+        // resetear el valor de la barra de progreso
+        Data.progressBar.value = 0
+        // creo un temporizador(CountDownTimer) de cuenta progresiva (0-31(31 por que al empezar ya sube 1 segundo instantaneo))
+        progressTimer = object : CountDownTimer(31000, 1000) {
+            // cada segundo que pasa, el valor de la barra de progreso sube 1
+            override fun onTick(millisUntilFinished: Long) {
+                Data.progressBar.value++
+            }
+            // cuando el temporizador llega a 0, no hago nada, podria hacerlo
+            override fun onFinish() {
+            }
+        }.start()
+    }
 
     fun startTimer() {
         Data.counter.value = 31
@@ -38,6 +55,7 @@ class QuestionsViewModel(private val questionsDao: QuestionsDao): ViewModel() {
                     Data.buttonEnabled.value = true
                     if (QuestionsData.roundQuestion.value < QuestionsData.questionsToShow.size) {
                         startTimer()
+                        startProgressTimer()
                     }
                 }
             }
@@ -46,6 +64,7 @@ class QuestionsViewModel(private val questionsDao: QuestionsDao): ViewModel() {
 
     fun resetTimer() {
         timer?.cancel()
+        progressTimer?.cancel()
     }
 
     fun getQuestions() {
@@ -85,6 +104,7 @@ class QuestionsViewModel(private val questionsDao: QuestionsDao): ViewModel() {
             QuestionsData.roundQuestion.value += 1
             if (QuestionsData.roundQuestion.value < QuestionsData.questionsToShow.size) {
                 startTimer()
+                startProgressTimer()
             }
         }
     }

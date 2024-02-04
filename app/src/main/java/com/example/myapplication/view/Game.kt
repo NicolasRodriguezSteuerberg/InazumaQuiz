@@ -15,9 +15,12 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -27,6 +30,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalConfiguration
@@ -44,6 +48,7 @@ import com.example.myapplication.models.Ranking
 import com.example.myapplication.models.RankingData
 import com.example.myapplication.viewmodel.QuestionsViewModel
 import com.example.myapplication.viewmodel.RankingViewModel
+const val MAX_COUNTER = 30
 
 @Composable
 fun GameScreen(
@@ -107,22 +112,34 @@ fun GameScreen(
         }
     }
 }
-
 @Composable
 fun Counter(modifier: Modifier, questionsViewModel: QuestionsViewModel) {
-    Column(
+    Box(
         modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 28.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        contentAlignment = Alignment.Center
     ) {
+        // Barra de progreso circular
+        CircularProgressIndicator(
+            modifier = Modifier
+                .size(50.dp),
+            progress = Data.progressBar.value.toFloat() / Data.maxProgressBar.toFloat(),
+            strokeWidth = 5.dp, // es el grosor de la barra
+            color = Color.Red,
+        )
+        // el texto del contador
         Text(
             text = "${Data.counter.value}",
             fontWeight = FontWeight.Bold,
         )
     }
+
+    // si no los hago aquí los botones de las respuestas se cambian cada segundo
+    // son corrutinas que se ejecutan cuando el composable se lanza
     LaunchedEffect("startTimer"){
         questionsViewModel.startTimer()
+        questionsViewModel.startProgressTimer()
     }
 }
 
@@ -226,12 +243,17 @@ fun AnswerButton(it: String, questionsViewModel: QuestionsViewModel) {
         enabled = Data.buttonEnabled.value,
         modifier = Modifier
             .fillMaxWidth(0.75f)
-            .background(Color(0xFF0069A2),
-        shape = CutCornerShape(50))
+            .background(
+                Color(0xFF0069A2),
+                shape = CutCornerShape(50)
+            )
             .border(
                 width = 1.5.dp,
                 color = when {
-                    clicked.value && QuestionsData.buttonState.value == "correct" -> Color(0xFF00FF00)
+                    clicked.value && QuestionsData.buttonState.value == "correct" -> Color(
+                        0xFF00FF00
+                    )
+
                     clicked.value && QuestionsData.buttonState.value == "wrong" -> Color(0xFFFF0000)
                     QuestionsData.buttonState.value == "timeOut" -> Color(0xFFFF8C00)
                     else -> Color.Transparent
