@@ -1,10 +1,12 @@
 package com.example.myapplication.view
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,9 +25,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.myapplication.R
 import com.example.myapplication.models.Ranking
 import com.example.myapplication.models.RankingData
 import com.example.myapplication.viewmodel.RankingViewModel
@@ -45,7 +52,11 @@ fun RankingScreen(
 
     val rankingList by remember{RankingData.rankingList}
 
-    Box(modifier = Modifier.fillMaxSize()){
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFFFDA836))
+    ){
         Box(modifier = Modifier
             .fillMaxHeight(0.1f)
             .fillMaxWidth()
@@ -77,7 +88,7 @@ fun RankingScreen(
         ){
             Button(
                 onClick = {
-                    /*TODO*/
+                    navController.navigate("start")
                 },
                 modifier = Modifier.align(Alignment.Center)
             ) {
@@ -87,6 +98,11 @@ fun RankingScreen(
             }
         }
     }
+}
+
+@Composable
+fun BackButton(){
+
 }
 
 @Composable
@@ -119,7 +135,7 @@ fun position(position: Int, ranking: Ranking){
         Row (
             modifier = Modifier
                 .fillMaxWidth(1f)
-                .background(Color(0xFF05A5B9)),
+                .background(Color(0xFF3383FF)),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ){
@@ -140,16 +156,22 @@ fun position(position: Int, ranking: Ranking){
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = (position + 1).toString(), color = Color.Black
+                        text = (position + 1).toString(),
+                        color = Color.Black,
+                        fontWeight = FontWeight.Bold
                     )
                 }
             }
             Text(
-                text = ranking.user
+                text = ranking.user,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF000000)
             )
             Text(
                 modifier = Modifier.padding(5.dp),
-                text = ranking.score.toString()
+                text = ranking.score.toString(),
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF000000)
             )
         }
     }
